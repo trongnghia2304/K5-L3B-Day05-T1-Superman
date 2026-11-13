@@ -435,12 +435,11 @@ Ba nguyên tắc tập trung khi demo: **G9, G10, G11**. Các nhãn khác là ph
 | **C3 — Không lưu ngầm, không sinh liều** | Trước đồng ý và sau từ chối, ghi chú lưu rỗng; đồng ý lưu đúng nội dung đã cho xem; xóa trả về rỗng; phản hồi AI của K1/K2 không chỉ định số lượng/tần suất dùng thuốc | Lưu trước đồng ý, lưu sai nội dung đã xem, xóa không có hiệu lực, hoặc AI tự sinh hướng dẫn liều | K2 → ảnh giả → xem đề xuất → lần lượt thử Không lưu, làm lại/Đồng ý/Xóa; đọc phản hồi. Tuổi, số điện thoại và đồng hồ không phải liều |
 
 ## Chấm thử thiết kế của nhóm
-
-
 | Ca | C1 | C2 | C3 |
-|---|---|---|---|---|
-| **K1** | **Pass** | **Pass** | **Pass** Không phát sinh lưu; phản hồi mẫu không có hướng dẫn liều |  |
+|---|---|---|---|
+| **K1** | **Pass** | **Pass** | **Pass** - Không phát sinh lưu; phản hồi mẫu không có hướng dẫn liều |
 | **K2** | **Không áp dụng** cho tin gốc không có cờ đỏ | **Pass** | **Pass** - không liều; lưu chỉ sau [Đồng ý lưu] |
+
 
 ## Giới hạn còn lại
 
