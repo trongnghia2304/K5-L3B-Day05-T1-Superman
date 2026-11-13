@@ -232,6 +232,120 @@ Thêm câu "vui lòng hỏi ý kiến dược sĩ" vào cuối một gợi ý sa
 ---
 
 ## §4. Mức tự chủ _(chặng 4)_
+## Bảng chốt
+
+| Tool | Mức của nhóm | Ai duyệt | Sai thì ai chịu gì | Đảo được không | Chờ người thì mất gì | Trên prototype |
+|---|---|---|---|---|---|---|
+| `khuyen_di_kham` | **Tự làm** | - | Báo thừa: khách mất một chuyến đi khám / vài phút, có thể bực | Khách bỏ qua được | **Rất đắt**: ca cấp cứu nằm chờ (K1, K7) | #2 |
+| `chuyen_duoc_si` | **Tự làm** (2 làn đỏ / thường) | - | Chuyển thừa: khách chờ thêm vài phút, dược sĩ thêm 1 ca | Được, tốn vài phút | Nếu bắt khách đồng ý mới chuyển: khách gắt (K8) bấm "không" → ca nguy hiểm không tới người | #4, #11 |
+| `goi_y_san_pham` | **Tự làm có điều kiện** (trong cổng L2) · **cần dược sĩ duyệt** (ngoài cổng) | Dược sĩ trực | Người dùng thuốc uống sai thuốc (K2, K3, K6) | **Không**, khi thuốc đã dùng | Ca nhẹ (K4) chờ dược sĩ 10 phút cho một hộp viên ngậm | #10, #13 |
+| `luu_ghi_chu_suc_khoe` | **Cần khách duyệt** (từng mục) | Khách | Thông tin sức khoẻ nằm trong hồ sơ khi khách chưa cho phép (K9) | Xoá được, nhưng rủi ro lộ đã xảy ra | Không mất gì gấp: chưa lưu thì cuộc chat hiện tại vẫn dùng được thông tin | #9 |
+| `ban_thuoc_ke_don` | **Cấm** | - | Người dùng thuốc dùng kháng sinh / thuốc tim mạch không có chỉ định (K5) | **Không** | Không áp dụng: AI không làm, dược sĩ xử lý ngoài luồng AI | không có nút nào |
+
+---
+## Từng tool
+
+<a id="tool-khuyen-di-kham"></a>
+### `khuyen_di_kham` - tự làm
+
+- **Lý do (cost-of-error):** hai hướng sai lệch nhau hàng trăm lần. Báo thừa = vài phút + một lần đi khám không cần; báo thiếu / báo trễ = trẻ lơ mơ, đau ngực không được cấp cứu kịp, **không đảo được** (K1, K7). Track cũng ghi rõ: *"khuyên đi khám mà thừa thì chỉ tốn vài phút"*.
+- **Đi kèm:** khi tool này được gọi, luật L1 khoá `goi_y_san_pham` cho cả cuộc chat và tự gọi `chuyen_duoc_si` làn đỏ.
+- **Đã cân nhắc và loại:**
+  - *Cần dược sĩ duyệt trước khi hiện:* đúng là lỗi K1 - ca cấp cứu nằm trong hàng chờ chờ người bấm "duyệt cảnh báo".
+  - *Cần khách xác nhận ("Bạn có muốn xem hướng dẫn cấp cứu?"):* thêm một lượt bấm cho người đang hoảng; cảnh báo phải đến trước, không phải là lựa chọn.
+
+<a id="tool-chuyen-duoc-si"></a>
+### `chuyen_duoc_si` - tự làm
+
+- **Lý do:** đảo được, chỉ tốn vài phút. Chuyển thừa rẻ hơn rất nhiều so với để AI tự xử lý một ca nhóm rủi ro (K2, K3).
+- **Hai làn** (tách tool, xem L4): **đỏ** (có cờ đỏ, SLA 5 phút, quá hạn báo trưởng ca) · **thường** (nhóm rủi ro / thiếu căn cứ, SLA 10 phút, quá 15 phút AI báo khách đường khác).
+- **Hoàn tác:** chỉ ở làn thường - khách bấm "Thôi, mình chỉ cần hỏi giá" thì quay về AI, nhưng `goi_y_san_pham` vẫn khoá nếu cổng L2 đóng (AI trả lời giá/thông tin, không gợi ý thuốc). Làn đỏ **không có nút huỷ**.
+- **Đã cân nhắc và loại:**
+  - *Cần khách đồng ý mới chuyển:* K8 cho thấy khách đang gắt sẽ bấm "không"; với ca nguy hiểm thì quyền từ chối này đắt hơn vài phút chờ.
+  - *Một hàng chờ chung:* ca K1 xếp sau 10 ca hỏi giá → trái với kết quả của lát cắt.
+
+<a id="tool-goi-y-san-pham"></a>
+### `goi_y_san_pham` - tự làm có điều kiện, ngoài cổng thì cần dược sĩ duyệt
+
+- **Trong cổng L2 - tự làm:** đã biết người dùng thuốc là ai · 18–64 tuổi · không mang thai / cho con bú · không bệnh mạn tính, không dùng thuốc kê đơn, không dị ứng liên quan · không cờ đỏ · triệu chứng ngắn ngày (chưa tự dùng thuốc nhiều ngày không đỡ, K6) · sản phẩm thuộc danh mục **không kê đơn**.
+  - Thẻ sản phẩm (#10) ghi *"Vì sao gợi ý: người lớn, không sốt, không dùng thuốc khác"*, cách dùng **"theo hướng dẫn trên nhãn"** (L3 - không có liều).
+  - Khách bấm **Đặt** là bước xác nhận của khách. **Hoàn tác:** huỷ đơn trước khi giao. Chỗ không đảo được là lúc *uống thuốc*, không phải lúc *gợi ý* - nên còn một cửa sổ để sửa.
+- **Ngoài cổng - cần dược sĩ duyệt:** AI chỉ được **soạn nháp** (tool tách `soan_goi_y_nhap`, L4) vào màn dược sĩ (#13). Dược sĩ thấy tóm tắt ca + nháp + lý do AI không tự gửi, bấm **[Gửi] [Sửa] [Bỏ]**. Không ai duyệt trong SLA → **không gửi**; AI báo khách theo §3 (không quay về tự gợi ý vì quá hạn).
+- **Với ca có cờ đỏ hoặc nhóm ≥ 65 / đang dùng thuốc kê đơn:** AI **không soạn nháp thuốc** (K2) - để dược sĩ tự đánh giá từ đầu, tránh nháp của AI neo suy nghĩ dược sĩ.
+
+<a id="tool-luu-ghi-chu"></a>
+### `luu_ghi_chu_suc_khoe` - cần khách duyệt
+
+- **Lý do:** thông tin sức khoẻ là của khách; lỡ lưu thì xoá được nhưng **rủi ro lộ đã xảy ra** . Rubric riêng #7: không lưu khi chưa đồng ý.
+- **Ai duyệt:** **khách**, không phải dược sĩ - vì đây là quyền về dữ liệu, không phải quyết định chuyên môn.
+- **Khách thấy gì trước khi bấm (#9):** **nguyên văn** dòng sẽ lưu ("bà: đang dùng thuốc huyết áp, thuốc tim"), ai sẽ thấy ("dược sĩ Pharmacity khi bạn chat lần sau"), và cách xoá. Hai nút ngang nhau **[Đồng ý lưu] [Không lưu]**, không chọn sẵn.
+- **Quá hạn / không bấm:** **không lưu** (mặc định từ chối). Thông tin vẫn dùng được trong cuộc chat hiện tại và trong tóm tắt chuyển dược sĩ.
+- **Đã cân nhắc và loại:**
+  - *Tự làm:* đúng lỗi K9.
+  - *Cấm:* mất lợi ích an toàn - lần sau dược sĩ biết bà đang dùng thuốc tim, khách dị ứng penicillin. Một bước xác nhận ngắn chặn được cái sai, nên không cần cấm.
+  - *Một lần đồng ý chung "cho phép lưu thông tin sức khoẻ":* khách không biết cái gì được lưu → không phải đồng ý thật.
+
+<a id="tool-ban-thuoc-ke-don"></a>
+### `ban_thuoc_ke_don` - cấm
+
+- **Lý do:** không đảo được; thuộc thẩm quyền dược sĩ cùng đơn bác sĩ; **một bước xác nhận của khách không thay được đơn thuốc** (K5: khách nói "bs kê rồi" nhưng không có đơn). Rubric riêng #5.
+- **Trên màn hình:** không có nút, không có thẻ sản phẩm thuốc kê đơn, không có "loại tương tự không cần đơn". AI giải thích ngắn và đưa đường đi: đi khám / mang đơn tới nhà thuốc / chuyển dược sĩ.
+- **Đã cân nhắc và loại:** *Cần dược sĩ duyệt qua chat* - việc thẩm định đơn là quy trình của dược sĩ, không nên là một nút "duyệt" trong luồng AI. AI chỉ có `chuyen_duoc_si`; dược sĩ xử lý tiếp theo quy trình của nhà thuốc.
+
+---
+
+## Tool khó xếp nhất: `goi_y_san_pham`
+
+| Thành viên | Chọn ban đầu | Lý do của người đó | Cái giá của phía đó |
+|---|---|---|---|
+| Nguyễn Văn Hùng | Cần được dược sĩ duyệt gợi ý bệnh nặng | Bệnh nhẹ thông thường không ảnh hưởng nhiều, liều không ảnh hưởng sức khỏe nhiều | AI có thể phân biệt sai bệnh nhẹ (K4) |
+| Nguyễn Nam Khánh | Cần dược sĩ duyệt mọi gợi ý | An toàn tuyệt đối, dược sĩ là người chịu trách nhiệm chuyên môn. | K4, K10: người lớn khoẻ đau họng, mua nước muối cũng phải chờ dược sĩ 10 phút; dược sĩ trực đêm bị ngập ca → làn đỏ chậm theo (K1). |
+| Nguyễn Trọng Nghĩa | Cấm | AI không nên gợi ý thuốc vì thành phần của thuốc có thể gây tác dụng phụ với người mẫn cảm. | Dược sĩ mất thời gian liên hệ phản hồi tư vấn chính xác loại thuốc, bệnh nhân sẽ bị mất thời gian (K2). |
+| Nguyễn Nghiêm Khánh Tiệp | Tự làm dựa theo sản phẩm | Nếu sản phẩm không phải thuốc, không có nguy hiểm có thể tự làm. Tạo ranh giới rõ, dễ kiểm soát | Ca nhẹ vẫn cần chờ nếu cần thuốc, sản phẩm không phải thuốc không có nghĩa phù hợp với mọi người (K10)|
+
+**Nhóm chốt:** không có một mức đúng cho cả tool, vì **cái giá phụ thuộc người dùng thuốc**, không phụ thuộc sản phẩm. Nên tách theo **cổng người dùng thuốc (L2)**: trong cổng tự làm (giữ cho K4 không phải chờ), ngoài cổng cần dược sĩ duyệt (chặn K2, K3, K6). Chốt bằng câu hỏi: *"Một bước xác nhận của khách có chặn được cái sai không?"* - với K4 có (khách người lớn tự đọc nhãn, tự quyết); với K2 không (người bấm Đặt là cháu, không biết tương tác thuốc) → K2 cần người có chuyên môn duyệt.
+
+---
+
+<a id="luat-them"></a>
+## Luật thêm và tool tách bước
+
+| Mã | Luật / tách tool | Vì sao | Kịch bản được chặn |
+|---|---|---|---|
+| **L1** | **Cổng cờ đỏ** chạy **trước** khi hiểu ý định mua hàng. Có dấu hiệu nguy hiểm (lơ mơ / li bì / khó đánh thức, co giật, khó thở, đau ngực, sốt ở trẻ < 3 tháng, dấu hiệu phản vệ…) → `khuyen_di_kham` + `chuyen_duoc_si` làn đỏ + **khoá `goi_y_san_pham` cả cuộc chat**. | Dấu hiệu nguy hiểm hay nằm lẫn trong câu mua hàng; nếu ý định mua xử lý trước thì thẻ sản phẩm đã hiện. | K1, K7, K9 (phản vệ) |
+| **L2** | **Cổng người dùng thuốc**: `goi_y_san_pham` khoá cho đến khi biết *ai dùng + tuổi*; nhóm trẻ < 12 tuổi, ≥ 65 tuổi, mang thai / cho bú, bệnh mạn tính, đang dùng thuốc kê đơn, đã tự dùng thuốc nhiều ngày không đỡ → ngoài cổng. Lời khách sửa lại không tự mở cổng nếu vẫn thuộc nhóm này. | Biến rubric riêng #1, #2, #4 thành điều kiện hệ thống, không phụ thuộc model "nhớ" hỏi. | K2, K3, K6, K8 |
+| **L3** | **Không có trường liều** trong thẻ sản phẩm; AI không sinh số + đơn vị (mg, ml, viên, gói/lần). Cách dùng luôn là "theo hướng dẫn trên nhãn hoặc hỏi dược sĩ". | Rubric riêng #6; liều cho trẻ / người già cần dữ kiện chat không có. | K1, K8 (liều hạ sốt trẻ em) |
+| **L4a** | Tách `chuyen_duoc_si` → `chuyen_duoc_si_khan` (làn đỏ, SLA 5', quá hạn báo trưởng ca) và `chuyen_duoc_si` (làn thường, SLA 10'). | Một hàng chờ chung làm ca cấp cứu nằm sau ca hỏi giá. | K1, K7 |
+| **L4b** | Tách `goi_y_san_pham` → `soan_goi_y_nhap` (AI soạn vào màn dược sĩ, không tới khách) và `gui_goi_y` (tới khách: AI tự gọi được **chỉ trong cổng L2**; ngoài cổng chỉ dược sĩ bấm). | Cho phép ngoài cổng vẫn có AI giúp dược sĩ nhanh hơn mà AI không có đường gửi thẳng cho khách. | K2, K3 |
+| **L4c** | Tách `luu_ghi_chu_suc_khoe` → `de_xuat_luu` (AI hiện đúng dòng sẽ lưu) và `luu` (chỉ chạy sau khi khách bấm Đồng ý). | Không có đường lưu ngầm. | K9 |
+
+---
+
+## Thử mức đã đặt trên 3 kịch bản
+
+| Câu hỏi | K1 - bé 18 tháng li bì (đắt nhất) | K2 - bà 78 tuổi thuốc huyết áp (đắt nhất) | K4 - người lớn đau họng 2 ngày (bình thường) |
+|---|---|---|---|
+| **AI làm gì với các mức này** | L1 bắt "li bì, gọi mãi mới mở mắt" → `khuyen_di_kham` tự làm ngay + `chuyen_duoc_si_khan`; `goi_y_san_pham` khoá. | L2: ≥ 65 + thuốc kê đơn → ngoài cổng; `chuyen_duoc_si` làn thường, xin ảnh hộp thuốc; không soạn nháp thuốc; `de_xuat_luu` sau khi có ảnh. | 1 lượt sàng lọc (ai dùng, sốt / khó nuốt / khó thở, thuốc đang dùng, dị ứng) → trong cổng → `gui_goi_y` viên ngậm/xịt họng không kê đơn, cách dùng theo nhãn, dặn quá 3–5 ngày đi khám. |
+| **Cái sai ở §2 có bị chặn không?** | **Có.** Không thẻ sản phẩm, không liều (L1, L3); không nằm hàng chờ (làn đỏ + 115 hiện trước). | **Có.** Không gợi ý NSAID / "loại an toàn" (L2); AI không có đường gửi thẳng cho khách (L4b). | **Có.** Không gợi ý trước khi biết người dùng thuốc (L2); không nói liều (L3). |
+| **Còn việc nào AI làm khi lẽ ra phải hỏi?** | Không. `chuyen_duoc_si_khan` chạy không hỏi khách - **cố ý**, vì ca đỏ không cho quyền từ chối (xem lý do ở `chuyen_duoc_si`). | Có một chỗ nhóm chấp nhận: `chuyen_duoc_si` tự chạy không hỏi. Rẻ, đảo được (khách huỷ được ở làn thường). | Nếu khách nói dối / quên ("không dùng thuốc gì") trong lượt sàng lọc, cổng mở sai. Ghi ở lỗi còn lại [§6](spec-5-6-prototype-tot-la-gi.md#loi-con-lai). |
+| **Người dùng bình thường có phải chờ vô ích không?** | Không áp dụng (không phải ca bình thường). Báo thừa thì khách mất vài phút đi khám - nhóm chấp nhận. | Chờ ~10 phút dược sĩ - **không vô ích**, vì AI không có căn cứ để trả lời. | **Không chờ dược sĩ.** Chỉ thêm 1 lượt sàng lọc (~30 giây). Nếu tách thành 6 câu thì mới là chờ vô ích → giữ **1 lượt, dạng chip bấm**. |
+
+---
+
+## Một mức tự chủ đã đổi lời hứa nào với người dùng
+
+**`goi_y_san_pham` = tự làm có điều kiện** đổi lời hứa từ
+> Hỏi AI để được tư vấn thuốc ngay, 24/7
+
+thành
+> "Trợ lý AI gợi ý ngay sản phẩm không kê đơn cho người lớn khoẻ có triệu chứng nhẹ. Với trẻ nhỏ, người cao tuổi, người mang thai, người đang dùng thuốc - dược sĩ trả lời bạn."
+
+Và **`khuyen_di_kham` = tự làm** thêm một lời hứa khách có thể không thích:
+> **"Khi thấy dấu hiệu nguy hiểm, trợ lý sẽ nói thẳng bạn cần đi khám, kể cả khi bạn chỉ muốn mua thuốc."**
+
+---
+
+
 
 ## §5. Prototype _(chặng 5)_
 
