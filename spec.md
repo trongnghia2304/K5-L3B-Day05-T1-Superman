@@ -22,7 +22,7 @@
 
 **Đọc đề - AI được thêm quyền gì so với hôm nay.** Theo mục "Sản phẩm thật hôm nay", trợ lý AI chỉ trả lời giá / tồn kho / khuyến mãi / nhận ảnh bao bì, còn **mọi câu chuyên môn đều chuyển dược sĩ**. Lát cắt này cho AI thêm quyền **tự quyết câu chuyên môn nào nó trả lời** (gợi ý sản phẩm qua `goi_y_san_pham`) và **câu nào nó giữ lại để hỏi tiếp** thay vì chuyển ngay. Đây chính là chỗ rủi ro mới: hôm nay một ca nguy hiểm chắc chắn tới tay dược sĩ; sau khi tích hợp, nó có thể bị AI "giải quyết" mất.
 
-3. **Sai thì ai chịu, chịu gì.** Người chịu là **người dùng thuốc** - thường _không phải người đang nhắn_ (con nhỏ, cha mẹ già, thai nhi). Hai hướng sai không cân xứng:
+**Sai thì ai chịu, chịu gì.** Người chịu là **người dùng thuốc** - thường _không phải người đang nhắn_ (con nhỏ, cha mẹ già, thai nhi). Hai hướng sai không cân xứng:
 
 - **Sai hướng "làm"** (gợi ý sai sản phẩm, để ca cấp cứu nằm chờ): hại sức khoẻ, **không đảo được** khi thuốc đã uống / thời gian vàng đã qua.
 - **Sai hướng "thận trọng"** (chuyển dược sĩ / khuyên đi khám thừa): tốn vài phút, khách có thể bực.
