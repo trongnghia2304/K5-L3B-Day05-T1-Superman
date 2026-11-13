@@ -1,0 +1,14 @@
+Kiểm tra cú pháp JavaScript: PASS
+PASS K1: cảnh báo và chuyển khẩn, khóa sản phẩm
+PASS K1: tin mới không hạ ca khẩn hoặc mở gợi ý
+PASS K1: sửa thông tin vẫn giữ cờ đỏ
+PASS K2: chuyển thường, không soạn nháp
+PASS K2: tin mới không ghi đè người dùng thuốc cũ
+PASS K2: hủy chuyển thường vẫn khóa gợi ý
+PASS K1: không hủy ca khẩn bằng hàm hủy thường
+PASS Ghi chú: chỉ lưu sau đồng ý và đúng nội dung đã xem
+PASS Ghi chú: từ chối không lưu
+PASS Thuốc kê đơn: không được gửi gợi ý thay thế
+PASS Tin ngoài fixture K4 chuyển người, không tự gợi ý
+PASS K2 bổ sung dấu hiệu đỏ: lên làn khẩn và giữ thông tin trước
+12 kiểm tra trạng thái PASS. DOM được giả lập; chưa kiểm tra bố cục hoặc click thật.

@@ -349,4 +349,104 @@ Và **`khuyen_di_kham` = tự làm** thêm một lời hứa khách có thể kh
 
 ## §5. Prototype _(chặng 5)_
 
+### 5.1. File, công cụ và phạm vi mô phỏng
+
+## Thông tin
+
+| Mục | Nội dung |
+|---|---|
+| File | [`prototype/index.html`](prototype/index.html) - một file, mở bằng trình duyệt, không cần server |
+| Công cụ | HTML + CSS + JS thuần, dựng bằng coding agent (Claude) |
+| Màn hình | **Màn 1 - Khách** (khung chat) và **Màn 2 - Chat bên phải** có ba tab Quyền & tool / Dược sĩ / HAX–PAIR.|
+| Phần mock | Toàn bộ tin mẫu, sản phẩm SP-DEMO, giá, ảnh hộp thuốc, dược sĩ, thông báo, cuộc gọi, bản đồ, đặt/hủy đơn và thời gian chờ. Không có người trực thật, không nhận ảnh thật, không kiểm kho và không tra nguồn dược học. |
+| Gọi AI | Phân nhánh bằng luật JavaScript, không phải mô hình hiểu ngôn ngữ. Không nhận bonus lời gọi AI thật. |
+| Giữ ngữ cảnh | Giữ khóa rủi ro trong cùng tab; cập nhật lời sửa để người tiếp nhận kiểm tra |
+| Cách bấm demo | Thanh trên cùng: 3 tab **K1 · K2 · K4** (mỗi tab nạp sẵn tin gốc, bấm **Gửi**) · **⏩ +5 phút** để thử SLA / quá hạn · **↺ Làm lại**. Ca mới tự hiện bên màn dược sĩ; bấm ca trong hàng chờ để xem chi tiết |
+
+## Hiển thị tool và mức tự chủ — vị trí #14
+
+Bảng **“Quyền và trạng thái của 5 nhóm tool”** nằm ở cột giải thích bên phải khung chat và có thể thu gọn. Khách không cần đọc tên hàm để sử dụng sản phẩm. Bảng theo tab K1/K2/K4 đang chọn, gồm tên tool, quyền, trạng thái và căn cứ; mở “Nhật ký hành động” để xem thứ tự.
+Bảng không phải log API hay bằng chứng AI chạy thật.
+
+### 5.2. Luồng demo có thể tái hiện
+
+**K1 — ca khó chính:**
+
+1. Chọn K1, bấm **Gửi** tin mẫu. Cảnh báo #2 và lời khuyên đầu tiên xuất hiện ngay; không có thẻ sản phẩm. #3 trích lời khách để giải thích quyết định.
+2. Xem bảng #14: `khuyen_di_kham` và `chuyen_duoc_si` đã chạy mô phỏng; `goi_y_san_pham` bị chặn. Mở mục màn dược sĩ ở cột phải để thấy ca nằm ở làn khẩn.
+3. Bấm **Mình kể chưa đúng**, nhập thông tin giả cần sửa. Nội dung sửa được bổ sung vào ca; **không tự hạ cảnh báo hoặc mở lại gợi ý** khi chưa được kiểm tra lại.
+4. Gửi thêm một tin hỏi mua thuốc: ngữ cảnh khẩn vẫn giữ, không trở về sàng lọc cho người lớn khỏe.
+5. Bấm **+5 phút** khi chưa nhận ca để mô phỏng quá hạn và thông báo trưởng ca; hoặc bấm **Nhận ca & gọi lại khách** để đổi trạng thái. Không có cuộc gọi thật.
+
+**K2 — người cao tuổi đang dùng thuốc:**
+
+1. Chọn K2, gửi tin mẫu: ca vào làn thường, có tóm tắt #7, không gợi ý thuốc hay nháp thuốc.
+2. Bấm **Sửa** tóm tắt rồi lưu: bên dược sĩ cập nhật thông tin. Nếu thêm từ khóa cờ đỏ của demo, ca được nâng lên làn khẩn, nháp cũ bị vô hiệu và không thể hủy bằng nút của làn thường.
+3. Bấm **Gửi ảnh hộp thuốc** (ảnh giả), xem nội dung xin lưu #9 lấy từ tóm tắt hiện tại. Trước khi chọn, tool lưu ở trạng thái chờ, chưa lưu.
+4. Chọn **Không lưu**: không tạo ghi chú; hoặc làm lại ca, chọn **Đồng ý lưu**, xem trạng thái đã chạy rồi bấm **Xóa**. Nội dung đề xuất lưu không còn cố định là thông tin bà 78 tuổi cho mọi ca.
+5. Hủy chuyển ở làn thường chỉ hủy hàng chờ; không xóa giới hạn rủi ro hoặc tự cho AI gợi ý.
+
+**K4 — ca đối chiếu bình thường:**
+
+- Gửi đúng tin mẫu, điền các lựa chọn sàng lọc, tuổi, bệnh mạn tính và thời gian/đã dùng thuốc. Chọn người lớn 30 tuổi, không dấu hiệu nặng, không thuốc/dị ứng, không bệnh mạn tính, đúng fixture 2 ngày và chưa tự dùng thuốc → thẻ **SP-DEMO**, nút đặt/hủy giả.
+- Nếu chọn nhóm cần người đánh giá, chuyển dược sĩ. Với nhánh có nháp, dược sĩ phải **nhận ca trước**, xem/sửa nháp rồi bấm **Gửi cho khách**. Nháp minh họa không có nguồn dược học và không phải đề xuất điều trị hợp lệ.
+- Tin ngoài fixture K4 được chuyển người thay vì tự đưa ra cùng một sản phẩm cho mọi triệu chứng. Đây là giới hạn chủ động của bản demo.
+
+### 5.3. Ảnh và ánh xạ nguyên tắc
+
+**Tình trạng ảnh:** Trong thư mục `prototype/`
+
+
+| Vị trí đánh số | Nội dung cần chỉ trực tiếp | Nguyên tắc chính | Mức tự chủ thể hiện |
+|---|---|---|---|
+| #1 | Nhãn AI và giới hạn chức năng | G1/G2: rõ khả năng, giới hạn | Không ngụ ý bác sĩ hay AI thật đang trực |
+| #2, #4, #11 | Cảnh báo ghim, chuyển khẩn song song | **G10**: thu hẹp phạm vi khi nghi ngờ | Khuyến cáo/chuyển ca tự làm, không chờ duyệt |
+| #3, #12 | Trích thông tin khách, tóm tắt chưa xác minh | **G11**: giải thích vì sao | Căn cứ định tuyến, không phải bằng chứng y khoa |
+| #5, #7 | Sửa lời kể/tóm tắt, cập nhật cho dược sĩ | **G9**: sửa dễ dàng | Sửa thông tin không tự mở khóa an toàn |
+| #6 | Hiển thị lý do không gợi ý | **G10 + G11** | Tool gửi gợi ý bị chặn |
+| #9 | Nội dung sẽ lưu, Đồng ý/Không lưu/Xóa | G9; minh bạch quyền kiểm soát | Khách duyệt trước khi lưu |
+| #10, #13 | Thẻ giả K4 hoặc nháp cần dược sĩ nhận/duyệt | G10; G9 với sửa nháp | Tự làm có điều kiện / cần dược sĩ duyệt |
+| #14 | Tên tool, quyền, trạng thái và nhật ký | G11 cho người đánh giá | Tách đã chạy, chờ duyệt và bị chặn |
+
+Ba nguyên tắc tập trung khi demo: **G9, G10, G11**. Các nhãn khác là phần hỗ trợ, không thay cho việc chỉ được vị trí cụ thể.
+
+### 5.4. Quyết định thiết kế và phương án đã loại
+
+| Quyết định | Chọn và lý do | Phương án đã loại và lý do |
+|---|---|---|
+| Hiện căn cứ | Trích lời khách và thông tin còn thiếu, để khách sửa và dược sĩ kiểm tra | Phần trăm “tin cậy”: chưa có model được hiệu chỉnh; số trông chính xác nhưng không có bằng chứng |
+| Điều khiển quyền | Nút đúng nơi phát sinh hành động; lưu cần đồng ý; gửi nháp cần dược sĩ nhận/duyệt | Xin xác nhận mọi hành động: làm chậm cảnh báo. Cho khách bật/tắt cổng nguy hiểm: có thể vô hiệu giới hạn |
+| Hiển thị tool | Bảng riêng cho demo, có thể thu gọn, trạng thái gắn với sự kiện | Nhét tên hàm vào mọi tin chat: gây khó hiểu. Chỉ liệt kê năm tool tĩnh: không chứng minh hành động nào đã xảy ra |
+| Giữ ngữ cảnh | Giữ khóa rủi ro trong cùng tab; cập nhật lời sửa để người tiếp nhận kiểm tra | Phân loại từng tin độc lập: tin sau có thể làm mất ca khẩn trước đó |
+| Cảnh báo sau sửa | Chưa tự hạ cảnh báo; không mở sản phẩm | Đổi đỏ sang cam ngay khi khách nói lại: demo không đủ khả năng xác minh để kết luận tình huống đã an toàn |
+| Sản phẩm và thời gian chờ | Sản phẩm giả có nhãn; mốc phản hồi là mục tiêu giả định | Tên thuốc thật/cam kết chắc chắn khi chưa có nguồn hay người trực: tạo niềm tin sai mức |
+
+
 ## §6. Tốt là gì _(chặng 6)_
+
+## Ba tiêu chí Pass/Fail
+
+Đánh giá hành vi trên dữ liệu giả; không đánh giá độ đúng y khoa hay mức sẵn sàng triển khai thực tế.
+
+| Mã | Pass khi | Fail khi | Cách kiểm tra |
+|---|---|---|---|
+| **C1 — Cảnh báo trước, không chờ** | Với fixture K1: lời phản hồi đầu có khuyến cáo ngay, cảnh báo được ghim; không có thẻ sản phẩm; chuyển dược sĩ là hành động song song | Phải trả lời sàng lọc/chờ tiếp nhận mới có cảnh báo, hoặc vẫn gửi thẻ sản phẩm | Gửi K1, xem lời đầu, #2/#6, bảng #14 và làn khẩn; tua thời gian khi chưa nhận ca |
+| **C2 — Giữ giới hạn khi đổi tin** | K1/K2 không nhận thẻ do AI tự gửi; gửi thêm tin không xóa khóa và không làm mất thông tin người dùng thuốc; ca chuyển có tóm tắt, trường thiếu ghi chưa rõ | Tin mới mở lại gợi ý, thay người dùng thuốc bằng phỏng đoán, hoặc ca khẩn bị hạ làn tự động | Gửi K1/K2 rồi tin mua thuốc khác; thử sửa, hủy chuyển thường; đối chiếu tóm tắt và nhật ký |
+| **C3 — Không lưu ngầm, không sinh liều** | Trước đồng ý và sau từ chối, ghi chú lưu rỗng; đồng ý lưu đúng nội dung đã cho xem; xóa trả về rỗng; phản hồi AI của K1/K2 không chỉ định số lượng/tần suất dùng thuốc | Lưu trước đồng ý, lưu sai nội dung đã xem, xóa không có hiệu lực, hoặc AI tự sinh hướng dẫn liều | K2 → ảnh giả → xem đề xuất → lần lượt thử Không lưu, làm lại/Đồng ý/Xóa; đọc phản hồi. Tuổi, số điện thoại và đồng hồ không phải liều |
+
+## Chấm thử thiết kế của nhóm
+
+
+| Ca | C1 | C2 | C3 |
+|---|---|---|---|---|
+| **K1** | **Pass** | **Pass** | **Pass** Không phát sinh lưu; phản hồi mẫu không có hướng dẫn liều |  |
+| **K2** | **Không áp dụng** cho tin gốc không có cờ đỏ | **Pass** | **Pass** - không liều; lưu chỉ sau [Đồng ý lưu] |
+
+## Giới hạn còn lại
+
+1. Luật từ khóa có thể bỏ sót cách nói khác hoặc bắt nhầm câu phủ định, ví dụ cụm “không khó thở” vẫn chứa từ khóa. Không tuyên bố xử lý đúng mọi ca lạ.
+2. Khách có thể khai thiếu/sai thông tin; thêm trường sàng lọc không xác minh được tính thật. K4 chỉ là fixture có kiểm soát, không là mô hình tư vấn tổng quát.
+3. Không có nguồn thuốc, tương tác thuốc, tồn kho hoặc dữ liệu dược sĩ trực. SP-DEMO và nháp chỉ thử quyền gửi; không dùng làm căn cứ điều trị. Bộ luật không được kiểm định chuyên môn.
+4. Giữ khóa cả cuộc chat có thể chuyển người quá nhiều, kể cả khi khách sửa đúng; cần dược sĩ đánh giá lại. Đây là đánh đổi được chọn để tránh việc khách tự mở cổng chỉ bằng một tin nhắn.
+5. Mốc SLA, báo trưởng ca, nhận ca/gọi lại đều giả. Chưa kiểm thử mất mạng, hết người trực hoặc nhiều người sửa đồng thời. Không có bảo đảm thời gian phản hồi thực tế.
+6. Chưa kiểm tra đầy đủ bàn phím, điện thoại và trình đọc màn hình. Các kiểm tra DOM, thao tác Xóa, sửa nháp khi đồng hồ chạy, thay đổi lựa chọn K4 và ảnh mới còn phải hoàn tất trên trình duyệt.
