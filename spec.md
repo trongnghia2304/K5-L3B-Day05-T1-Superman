@@ -1,8 +1,7 @@
 # Bài nộp LAB5 - T1 Y tế · Nhóm Superman
 
 **Lớp:** L3B
-
-**Track:** T1 - Y tế (kênh chat "Hỏi dược sĩ" Pharmacity)
+**Lớp:** L3B · **Bàn / zone:** B · **Track:** T1 - Y tế (kênh chat "Hỏi dược sĩ" Pharmacity)
 
 | Họ và Tên                | Mã Học Viên | Việc đã làm |
 | ------------------------ | ----------- | ----------- |
